@@ -1,0 +1,23 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    font-family:'Courier New', Courier, monospace;
+    font-size: 16px;
+}
+
+div.gameboard {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(3, 1fr);
+    border: .1rem solid black;
+    height: 500px;
+    width: 500px;
+}
+
+div.square {
+    
+}

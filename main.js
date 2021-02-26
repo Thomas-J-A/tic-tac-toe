@@ -1,26 +1,74 @@
 const gameBoard = (() => {
     let arr = ['', '', '', '', '', '', '', '', ''];
-    
-    function updateArr(index) {
-        arr[index] = 'x';
+
+    function isFree(index) {
+        return (arr[index] === '') ? true : false;
+    }
+
+    function updateArr(index, marker) {
+        arr[index] = marker;
+    }
+
+    function isWinner(marker) {
+        return checkRows(marker) || 
+               checkColumns(marker) || 
+               checkDiagonals(marker) 
+    }
+
+    function checkRows(marker) {
+        if (arr[0] == marker && arr[1] == marker && arr[2] == marker) return true;
+        if (arr[3] == marker && arr[4] == marker && arr[5] == marker) return true;
+        if (arr[6] == marker && arr[7] == marker && arr[8] == marker) return true;
+        return false;
+    }
+
+    function checkColumns(marker) {
+        if (arr[0] == marker && arr[3] == marker && arr[6] == marker) return true;
+        if (arr[1] == marker && arr[4] == marker && arr[7] == marker) return true;
+        if (arr[2] == marker && arr[5] == marker && arr[8] == marker) return true;
+        return false;
+    }
+
+    function checkDiagonals(marker) {
+        if (arr[0] == marker && arr[4] == marker && arr[8] == marker) return true;
+        if (arr[2] == marker && arr[4] == marker && arr[6] == marker) return true;
+        return false;
+    }
+
+    function isTie() {
+        for (let i = 0; i < 9; i++) {
+            if (arr[i] === '') return false;
+        }
+        return true;
     }
 
     return {
         arr,
+        isFree,
+        isTie,
+        isWinner,
         updateArr
     };
 })();
 
 
 const displayController = (() => {
+    // local variables
+    let whoseTurn = 'player1';
+
     // cache DOM
     const squares = document.querySelectorAll('.square');
 
     // event callbacks
     function updateBoard(e) {
-        const squareIndex = e.target.getAttribute('data-index');
-        gameBoard.updateArr(squareIndex);
-        displayController.render();
+        const index = e.target.getAttribute('data-index');
+        if (!gameBoard.isFree(index)) return;
+        const marker = (whoseTurn === 'player1') ? 'x' : 'o';
+        gameBoard.updateArr(index, marker);
+        marker === 'x' ? whoseTurn = 'player2' : whoseTurn = 'player1';
+        render(gameBoard.arr);
+        if (gameBoard.isWinner(marker)) alert('three in a row');
+        if (gameBoard.isTie()) alert('tie');
     }
 
     // add event listeners
@@ -28,9 +76,8 @@ const displayController = (() => {
         square.addEventListener('click', updateBoard);
     });
 
-    function render() {
-        const arr = gameBoard.arr;             
-        for (let i = 0; i < arr.length; i++) {
+    function render(arr) {
+        for (let i = 0; i < 9; i++) {
             squares[i].textContent = arr[i];
         }
     }
@@ -41,4 +88,7 @@ const displayController = (() => {
 })();
 
 
+// Player factory 
+function Player() {
 
+};

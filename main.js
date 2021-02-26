@@ -5,8 +5,14 @@ const gameBoard = (() => {
         return (arr[index] === '') ? true : false;
     }
 
-    function updateArr(index, marker) {
+    function updateArray(index, marker) {
         arr[index] = marker;
+    }
+
+    function resetArray() {
+        for (let i = 0; i < 9; i++) {
+            if (arr[i] !== '') arr[i] = '';
+        }
     }
 
     function isThreeInARow(marker) {
@@ -47,7 +53,8 @@ const gameBoard = (() => {
         isFree,
         isTie,
         isThreeInARow,
-        updateArr
+        updateArray,
+        resetArray
     };
 })();
 
@@ -58,18 +65,33 @@ const displayController = (() => {
 
     // cache DOM
     const squares = document.querySelectorAll('.square');
+    const resetBtn = document.getElementById('reset-btn');
+
+    // add event listeners
+    squares.forEach(square => {
+        square.addEventListener('click', updateBoard);
+    });
+
+    resetBtn.addEventListener('click', resetBoard);
 
     // event callbacks
     function updateBoard(e) {
         const index = e.target.getAttribute('data-index');
         if (!gameBoard.isFree(index)) return;
         const marker = (whoseTurn === 'player1') ? 'x' : 'o';
-        gameBoard.updateArr(index, marker);
+        gameBoard.updateArray(index, marker);
         toggleTurn();
         render(gameBoard.arr);
         isGameOver(marker);
     }
 
+    function resetBoard() {
+        gameBoard.resetArray();
+        whoseTurn = 'player1';
+        render(gameBoard.arr);
+    }
+
+    // helper functions
     function toggleTurn() {
         (whoseTurn === 'player1') ? whoseTurn = 'player2' : whoseTurn = 'player1';
     }
@@ -78,11 +100,6 @@ const displayController = (() => {
         if (gameBoard.isThreeInARow(marker)) alert('three in a row');
         if (gameBoard.isTie()) alert('tie');
     }
-
-    // add event listeners
-    squares.forEach(square => {
-        square.addEventListener('click', updateBoard);
-    });
 
     function render(arr) {
         for (let i = 0; i < 9; i++) {

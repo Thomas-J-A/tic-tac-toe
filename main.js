@@ -9,7 +9,7 @@ const gameBoard = (() => {
         arr[index] = marker;
     }
 
-    function isWinner(marker) {
+    function isThreeInARow(marker) {
         return checkRows(marker) || 
                checkColumns(marker) || 
                checkDiagonals(marker) 
@@ -46,7 +46,7 @@ const gameBoard = (() => {
         arr,
         isFree,
         isTie,
-        isWinner,
+        isThreeInARow,
         updateArr
     };
 })();
@@ -65,9 +65,17 @@ const displayController = (() => {
         if (!gameBoard.isFree(index)) return;
         const marker = (whoseTurn === 'player1') ? 'x' : 'o';
         gameBoard.updateArr(index, marker);
-        marker === 'x' ? whoseTurn = 'player2' : whoseTurn = 'player1';
+        toggleTurn();
         render(gameBoard.arr);
-        if (gameBoard.isWinner(marker)) alert('three in a row');
+        isGameOver(marker);
+    }
+
+    function toggleTurn() {
+        (whoseTurn === 'player1') ? whoseTurn = 'player2' : whoseTurn = 'player1';
+    }
+
+    function isGameOver(marker) {
+        if (gameBoard.isThreeInARow(marker)) alert('three in a row');
         if (gameBoard.isTie()) alert('tie');
     }
 

@@ -68,6 +68,7 @@ const displayController = (() => {
     const squares = document.querySelectorAll('.square');
     const resetBtn = document.getElementById('reset-btn');
     const modal = document.getElementById('modal');
+    const modalImg = document.getElementById('modal-img');
     const message = document.getElementById('message');
 
     // add event listeners
@@ -100,8 +101,10 @@ const displayController = (() => {
     function displayModal(marker) {
         if (marker) {
             message.textContent = (marker === 'x') ? 'Player 1 wins!' : 'Player 2 wins!';
+            modalImg.src = 'images/balloon.jpeg';
         } else {
             message.textContent = 'It\'s a draw!';
+            modalImg.src = 'images/draw.jpeg';
         }
         modal.style.display = 'block';
     }

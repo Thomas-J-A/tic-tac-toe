@@ -64,8 +64,11 @@ const displayController = (() => {
     let whoseTurn = 'player1';
 
     // cache DOM
+    const playerIcons = document.querySelectorAll('.player i');
     const squares = document.querySelectorAll('.square');
     const resetBtn = document.getElementById('reset-btn');
+    const modal = document.getElementById('modal');
+    const message = document.getElementById('message');
 
     // add event listeners
     squares.forEach(square => {
@@ -80,25 +83,52 @@ const displayController = (() => {
         if (!gameBoard.isFree(index)) return;
         const marker = (whoseTurn === 'player1') ? 'x' : 'o';
         gameBoard.updateArray(index, marker);
-        toggleTurn();
         render(gameBoard.arr);
-        isGameOver(marker);
+        checkForGameOver(marker);
+    }
+
+    function checkForGameOver(marker){
+        if (gameBoard.isThreeInARow(marker)) {
+            displayModal(marker);
+        } else if (gameBoard.isTie()) {
+            displayModal();
+        } else {
+            toggleTurn();
+        }
+    }
+
+    function displayModal(marker) {
+        if (marker) {
+            message.textContent = (marker === 'x') ? 'Player 1 wins!' : 'Player 2 wins!';
+        } else {
+            message.textContent = 'It\'s a draw!';
+        }
+        modal.style.display = 'block';
+    }
+
+    function toggleTurn() {
+        if (whoseTurn === 'player1') {
+            whoseTurn = 'player2';
+            playerIcons[0].classList.remove('active-p1');
+            playerIcons[1].classList.add('active-p2');
+        } else {
+            whoseTurn = 'player1';
+            playerIcons[1].classList.remove('active-p2');
+            playerIcons[0].classList.add('active-p1');
+        }
     }
 
     function resetBoard() {
-        gameBoard.resetArray();
+        hideModal();
         whoseTurn = 'player1';
+        gameBoard.resetArray();
+        playerIcons[0].classList.add('active-p1');
+        playerIcons[1].classList.remove('active-p2');
         render(gameBoard.arr);
     }
 
-    // helper functions
-    function toggleTurn() {
-        (whoseTurn === 'player1') ? whoseTurn = 'player2' : whoseTurn = 'player1';
-    }
-
-    function isGameOver(marker) {
-        if (gameBoard.isThreeInARow(marker)) alert('three in a row');
-        if (gameBoard.isTie()) alert('tie');
+    function hideModal() {
+        modal.style.display = 'none';
     }
 
     function render(arr) {
@@ -106,14 +136,4 @@ const displayController = (() => {
             squares[i].textContent = arr[i];
         }
     }
-    
-    return {
-        render
-    };
 })();
-
-
-// Player factory 
-function Player() {
-
-};
